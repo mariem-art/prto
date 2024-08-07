@@ -20,8 +20,24 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
-}
+  // return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  if (data && data.length) {
+     data.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)) // Tri par date décroissante
+     return data.map(bill => row(bill)).join("")
+
+    }   
+  }
+// const rows = (data) => {
+//   return data && data.length
+//     ? data
+//     // .sort((a,b) => (new Date(a.date) > new Date(b.date) ? 1 : -1))
+//     // changement de new Date en convertDate ainsi que le sens du chevron
+//       .sort((a,b) => (convertDate(a.date) < convertDate(b.date) ? 1 : -1))
+//       .map(bill => row(bill))
+//       .join("")
+//     : []
+// }
+
 
 export default ({ data: bills, loading, error }) => {
   

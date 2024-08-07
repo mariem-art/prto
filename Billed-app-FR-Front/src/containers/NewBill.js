@@ -16,8 +16,8 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
-  handleChangeFile = e => {
-    e.preventDefault()
+  handleChangeFile = e => 
+  { e.preventDefault()
     const fileInput = this.document.querySelector(`input[data-testid="file"]`);//declaration fr fileInput
     const file = fileInput.files[0];
    // Vérification si un fichier a été sélectionné (condition)

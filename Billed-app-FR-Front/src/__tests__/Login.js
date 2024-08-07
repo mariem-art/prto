@@ -1,19 +1,26 @@
-/**
- * @jest-environment jsdom
- */
-import YourClassWithAuthentication from 'path/to/YourClassWithAuthentication';
-import $ from 'jquery';
-global.$ = global.jQuery = $;
-
 import LoginUI from "../views/LoginUI";
 import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
-import { fireEvent, screen } from "@testing-library/dom";
-import mockStore from "../__mocks__/store";
-jest.mock('../app/Store', () => mockStore);
+import { fireEvent, screen, render } from "@testing-library/dom";
+import mockStore from "../__mocks__/store"
+
+beforeEach(() => {
+  // Crée un mock pour localStorage.clear
+  jest.spyOn(Storage.prototype, 'clear').mockImplementation(() => {
+    // Ne fait rien pour simuler la suppression de données dans le localStorage
+  });
+});
+
+afterEach(() => {
+  // Restaure le comportement d'origine de localStorage.clear
+  Storage.prototype.clear.mockRestore();
+});
+
 
 describe("Given that I am a user on login page", () => {
+
   describe("When I do not fill fields and I click on employee button Login In", () => {
+
     test("Then It should renders Login page", () => {
       document.body.innerHTML = LoginUI();
 
@@ -54,6 +61,7 @@ describe("Given that I am a user on login page", () => {
   });
 
   describe("When I do fill fields in correct format and I click on employee button Login In", () => {
+
     test("Then I should be identified as an Employee in app", () => {
       document.body.innerHTML = LoginUI();
       const inputData = {
@@ -64,12 +72,15 @@ describe("Given that I am a user on login page", () => {
       const inputEmailUser = screen.getByTestId("employee-email-input");
       fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
       expect(inputEmailUser.value).toBe(inputData.email);
+
       const inputPasswordUser = screen.getByTestId("employee-password-input");
       fireEvent.change(inputPasswordUser, {
         target: { value: inputData.password },
       });
       expect(inputPasswordUser.value).toBe(inputData.password);
+
       const form = screen.getByTestId("form-employee");
+
       // localStorage should be populated with form data
       Object.defineProperty(window, "localStorage", {
         value: {
@@ -111,53 +122,8 @@ describe("Given that I am a user on login page", () => {
           status: "connected",
         })
       );
+
     });
-
-
-    // Test de la fonction handleSubmitEmployee
-describe('handleSubmitEmployee', () => {
-  test('should prevent default and perform expected actions', async () => {
-    // Préparation d'un objet factice pour l'événement
-    const fakeEvent = {
-      preventDefault: jest.fn(),
-      target: {
-        querySelector: jest.fn().mockImplementation((selector) => {
-          if (selector === 'input[data-testid="employee-email-input"]') {
-            return { value: 'test@example.com' }; // Simule la valeur de l'e-mail
-          }
-          if (selector === 'input[data-testid="employee-password-input"]') {
-            return { value: 'password123' }; // Simule la valeur du mot de passe
-          }
-        }),
-      },
-    };
-
-    // Appel de la fonction à tester avec l'objet factice d'événement
-    await handleSubmitEmployee.call(fakeClass, fakeEvent);
-
-    // Vérification que preventDefault a été appelé
-    expect(fakeEvent.preventDefault).toHaveBeenCalled();
-
-    // Vérification des appels aux méthodes attendues
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
-      'user',
-      JSON.stringify({
-        type: 'Employee',
-        email: 'test@example.com',
-        password: 'password123',
-        status: 'connected',
-      })
-    );
-    expect(loginMock).toHaveBeenCalledWith({
-      type: 'Employee',
-      email: 'test@example.com',
-      password: 'password123',
-      status: 'connected',
-    });
-    expect(onNavigateMock).toHaveBeenCalledWith(ROUTES_PATH['Bills']);
-    expect(fakeClass.document.body.style.backgroundColor).toBe('#fff');
-  });
-});
 
     test("It should renders Bills page", () => {
       expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
@@ -166,6 +132,7 @@ describe('handleSubmitEmployee', () => {
 });
 
 describe("Given that I am a user on login page", () => {
+
   describe("When I do not fill fields and I click on admin button Login In", () => {
     test("Then It should renders Login page", () => {
       document.body.innerHTML = LoginUI();

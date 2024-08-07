@@ -90,6 +90,7 @@ npm install
 ```
 npm run:dev
 ```
+npm run run:dev
 
 ### Access to the PAI :
 

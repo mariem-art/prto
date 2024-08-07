@@ -14,7 +14,10 @@
       "!**/external/**",
       "!**/fixtures/**",
       "!**/lcov-report/**"
-    ]
+    ],
+    "coverageThreshold": {
+     
+    }
   },
   "type": "module",
   "dependencies": {
